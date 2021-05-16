@@ -26,11 +26,16 @@ public class AdminController {
     public  String info(Model model){
         model.addAttribute("users",userService.findAll());
         model.addAttribute("subscribes",subscribeService.findAll());
+        if(userService.findUser(userService.getCurrentUsername()).getRoleList().get(0).getRole().equals("ADMIN"))
         return "admin";
+        return "redirect:/info";
     }
     @GetMapping("/del/{id}")
     public String del(@PathVariable("id") long id){
-        userService.delUser(id);
-        return "redirect:/adminpage";
+        if(userService.findUser(userService.getCurrentUsername()).getRoleList().get(0).getRole().equals("ADMIN")) {
+            userService.delUser(id);
+            return "redirect:/adminpage";
+        }
+        return "redirect:/info";
     }
 }
